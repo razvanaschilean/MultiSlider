@@ -20,7 +20,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="org.djodjo.widget.example.multislider.MultiSliderFragmentSingle"
+    tools:context="io.apptik.widget.example.multislider.MultiSliderFragmentSingle"
     >
 
     <LinearLayout
@@ -47,7 +47,7 @@
 
         </LinearLayout>
 
-        <org.djodjo.widget.MultiSlider
+        <io.apptik.widget.MultiSlider
             android:id="@+id/multiSlider1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
 
         </LinearLayout>
 
-        <org.djodjo.widget.MultiSlider
+        <io.apptik.widget.MultiSlider
             android:id="@+id/multiSlider2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
 
         </LinearLayout>
 
-        <org.djodjo.widget.MultiSlider
+        <io.apptik.widget.MultiSlider
             android:id="@+id/multiSlider3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
 
         </LinearLayout>
 
-        <org.djodjo.widget.MultiSlider
+        <io.apptik.widget.MultiSlider
             android:id="@+id/multiSlider4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -187,7 +187,7 @@
 
         </LinearLayout>
 
-        <org.djodjo.widget.MultiSlider
+        <io.apptik.widget.MultiSlider
             android:id="@+id/multiSlider5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -197,6 +197,42 @@
             app:scaleMax="300"
 
             />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tinted Seekbar: "/>
+            <TextView
+                android:id="@+id/minValue6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="min"
+                android:paddingLeft="10dp"
+                />
+
+        </LinearLayout>
+
+        <io.apptik.widget.MultiSlider
+            android:id="@+id/multiSlider6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:track="@drawable/example_scrubber_secondary_holo"
+            app:rangeColor="@android:color/holo_green_light"
+            app:thumbColor="@android:color/holo_blue_bright"
+            app:thumbNumber="1"
+            app:trackColor="@android:color/holo_purple" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 AppTik Project
  * Copyright (C) 2014 Kalin Maldzhanski
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.djodjo.widget;
+package io.apptik.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -22,13 +23,14 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-
 
 import java.util.LinkedList;
 
@@ -91,6 +93,8 @@ public class MultiSlider extends View {
     private LinkedList<Thumb> mDraggingThumbs = new LinkedList<Thumb>();
     //thumbs that are currently being touched
     LinkedList<Thumb> exactTouched = null;
+
+    private final TypedArray a;
 
     public class Thumb {
         //abs min value for this thumb
@@ -233,7 +237,7 @@ public class MultiSlider extends View {
     }
 
     public MultiSlider(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.multiSliderStyle);
+        this(context, attrs, io.apptik.widget.R.attr.multiSliderStyle);
     }
 
     public MultiSlider(Context context, AttributeSet attrs, int defStyle) {
@@ -245,15 +249,17 @@ public class MultiSlider extends View {
 
         mUiThreadId = Thread.currentThread().getId();
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MultiSlider, defStyle, styleRes);
+        a = context.obtainStyledAttributes(attrs, io.apptik.widget.R.styleable.MultiSlider, defStyle, styleRes);
         mNoInvalidate = true;
-        int numThumbs = a.getInt(R.styleable.MultiSlider_thumbNumber, 2);
+        int numThumbs = a.getInt(io.apptik.widget.R.styleable.MultiSlider_thumbNumber, 2);
         initMultiSlider(numThumbs);
 
-        Drawable trackDrawable = a.getDrawable(R.styleable.MultiSlider_android_track);
-        if(trackDrawable ==  null)
-            trackDrawable = getResources().getDrawable(org.djodjo.widget.R.drawable.multislider_scrubber_track_holo_light);
-            setTrackDrawable(trackDrawable);
+        Drawable trackDrawable = a.getDrawable(io.apptik.widget.R.styleable.MultiSlider_android_track);
+        if (trackDrawable == null) {
+            trackDrawable = ContextCompat.getDrawable(getContext(), io.apptik.widget.R.drawable.multislider_scrubber_track_holo_light);
+        }
+
+        setTrackDrawable(getTintedDrawable(trackDrawable, a.getColor(io.apptik.widget.R.styleable.MultiSlider_trackColor, 0)));
 
         //TODO
 //        mMinWidth = a.getDimensionPixelSize(R.styleable.MultiSlider_minWidth, mMinWidth);
@@ -262,30 +268,35 @@ public class MultiSlider extends View {
 //        mMaxHeight = a.getDimensionPixelSize(R.styleable.MultiSlider_maxHeight, mMaxHeight);
 
 
-        setStep(a.getInt(R.styleable.MultiSlider_scaleStep, mStep));
-        setStepsThumbsApart(a.getInt(R.styleable.MultiSlider_stepsThumbsApart, mStepsThumbsApart));
-        setDrawThumbsApart(a.getBoolean(R.styleable.MultiSlider_drawThumbsApart, mDrawThumbsApart));
-        setMax(a.getInt(R.styleable.MultiSlider_scaleMax, mScaleMax), true);
-        setMin(a.getInt(R.styleable.MultiSlider_scaleMin, mScaleMin), true);
+        setStep(a.getInt(io.apptik.widget.R.styleable.MultiSlider_scaleStep, mStep));
+        setStepsThumbsApart(a.getInt(io.apptik.widget.R.styleable.MultiSlider_stepsThumbsApart, mStepsThumbsApart));
+        setDrawThumbsApart(a.getBoolean(io.apptik.widget.R.styleable.MultiSlider_drawThumbsApart, mDrawThumbsApart));
+        setMax(a.getInt(io.apptik.widget.R.styleable.MultiSlider_scaleMax, mScaleMax), true);
+        setMin(a.getInt(io.apptik.widget.R.styleable.MultiSlider_scaleMin, mScaleMin), true);
 
 
-        mMirrorForRtl = a.getBoolean(R.styleable.MultiSlider_mirrorForRTL, mMirrorForRtl);
+        mMirrorForRtl = a.getBoolean(io.apptik.widget.R.styleable.MultiSlider_mirrorForRTL, mMirrorForRtl);
 
         // --> now place thumbs
 
-        Drawable thumbDrawable = a.getDrawable(R.styleable.MultiSlider_android_thumb);
-        if(thumbDrawable==null) thumbDrawable = getResources().getDrawable(org.djodjo.widget.R.drawable.multislider_scrubber_control_selector_holo_light);
+        Drawable thumbDrawable = a.getDrawable(io.apptik.widget.R.styleable.MultiSlider_android_thumb);
 
-        Drawable range = a.getDrawable(R.styleable.MultiSlider_range);
-        if(range==null) range = getResources().getDrawable(org.djodjo.widget.R.drawable.multislider_scrubber_primary_holo);
+        if (thumbDrawable == null) {
+            thumbDrawable = ContextCompat.getDrawable(getContext(), io.apptik.widget.R.drawable.multislider_scrubber_control_selector_holo_light);
+        }
 
-        Drawable range1 = a.getDrawable(R.styleable.MultiSlider_range1);
-        Drawable range2 = a.getDrawable(R.styleable.MultiSlider_range2);
+        Drawable range = a.getDrawable(io.apptik.widget.R.styleable.MultiSlider_range);
+        if (range == null) {
+            range = ContextCompat.getDrawable(getContext(), io.apptik.widget.R.drawable.multislider_scrubber_primary_holo);
+        }
+
+        Drawable range1 = a.getDrawable(io.apptik.widget.R.styleable.MultiSlider_range1);
+        Drawable range2 = a.getDrawable(io.apptik.widget.R.styleable.MultiSlider_range2);
 
         setThumbDrawables(thumbDrawable, range, range1, range2); // will guess thumbOffset if thumb != null...
         // ...but allow layout to override this
 
-        int thumbOffset = a.getDimensionPixelOffset(R.styleable.MultiSlider_android_thumbOffset, thumbDrawable.getIntrinsicWidth()/2);
+        int thumbOffset = a.getDimensionPixelOffset(io.apptik.widget.R.styleable.MultiSlider_android_thumbOffset, thumbDrawable.getIntrinsicWidth()/2);
         setThumbOffset(thumbOffset);
 
         positionThumbs();
@@ -507,16 +518,16 @@ public class MultiSlider extends View {
             }
 
             if (curr==1 && range1!=null) {
-                rangeDrawable =  range1;
+                rangeDrawable =  getTintedDrawable(range1, a.getColor(io.apptik.widget.R.styleable.MultiSlider_range1Color, 0));
             } else if (curr==2 && range2!=null) {
-                rangeDrawable =  range2;
+                rangeDrawable =  getTintedDrawable(range2, a.getColor(io.apptik.widget.R.styleable.MultiSlider_range2Color, 0));
             } else {
-                rangeDrawable = range.getConstantState().newDrawable();
+                rangeDrawable = getTintedDrawable(range.getConstantState().newDrawable(), a.getColor(io.apptik.widget.R.styleable.MultiSlider_rangeColor, 0));
             }
 
             mThumb.setRange(rangeDrawable);
 
-            Drawable newDrawable = thumb.getConstantState().newDrawable();
+            Drawable newDrawable = getTintedDrawable(thumb.getConstantState().newDrawable(), a.getColor(io.apptik.widget.R.styleable.MultiSlider_thumbColor, 0));
             newDrawable.setCallback(this);
 
             // Assuming the thumb drawable is symmetric, set the thumb offset
@@ -1345,5 +1356,13 @@ public class MultiSlider extends View {
         }
     }
 
+    private Drawable getTintedDrawable(Drawable drawable, int tintColor) {
+        if (drawable != null && tintColor != 0) {
+            Drawable wrappedDrawable = DrawableCompat.wrap(drawable.mutate());
+            DrawableCompat.setTint(wrappedDrawable, tintColor);
+            return wrappedDrawable;
+        }
+        return drawable;
+    }
 
 }
